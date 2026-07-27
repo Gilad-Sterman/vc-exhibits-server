@@ -12,6 +12,8 @@ import {
   togglePublish,
   uploadImage,
   uploadAudio,
+  listAdmins,
+  createAdmin,
 } from '../controllers/adminController.js'
 
 const router = express.Router()
@@ -26,5 +28,8 @@ router.patch('/exhibits/:id/publish', togglePublish)
 
 router.post('/upload/image', uploadImageMiddleware, uploadImage)
 router.post('/upload/audio', uploadAudioMiddleware, uploadAudio)
+
+router.get('/admins', listAdmins)
+router.post('/admins', createAdmin)
 
 export default router

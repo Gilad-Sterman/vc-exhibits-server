@@ -1,5 +1,7 @@
 import Exhibit from '../models/Exhibit.js'
+import Admin from '../models/Admin.js'
 import cloudinary from '../config/cloudinary.js'
+import bcrypt from 'bcryptjs'
 
 const uploadToCloudinary = (buffer, mimetype, options) => {
   const b64 = buffer.toString('base64')
@@ -100,6 +102,32 @@ export const uploadImage = async (req, res) => {
     res.json({ url: result.secure_url, publicId: result.public_id })
   } catch (error) {
     res.status(500).json({ message: error.message })
+  }
+}
+
+export const listAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.find().select('-password').sort({ createdAt: 1 })
+    res.json(admins)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
+export const createAdmin = async (req, res) => {
+  const { email, password, name } = req.body
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' })
+  }
+  try {
+    const hash = await bcrypt.hash(password, 12)
+    const admin = await Admin.create({ email, password: hash, name: name || '' })
+    res.status(201).json({ _id: admin._id, email: admin.email, name: admin.name })
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Email already in use' })
+    }
+    res.status(500).json({ message: err.message })
   }
 }
 
