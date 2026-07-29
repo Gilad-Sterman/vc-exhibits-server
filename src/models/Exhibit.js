@@ -11,19 +11,10 @@ const mediaAssetSchema = new mongoose.Schema(
 const exhibitSchema = new mongoose.Schema(
   {
     exhibitNumber: { type: Number, required: true, unique: true },
-    title: {
-      he: { type: String, default: '' },
-      en: { type: String, default: '' },
-    },
-    description: {
-      he: { type: String, default: '' },
-      en: { type: String, default: '' },
-    },
+    title: { type: Map, of: String, default: {} },
+    description: { type: Map, of: String, default: {} },
     image: { type: mediaAssetSchema, default: () => ({}) },
-    audio: {
-      he: { type: mediaAssetSchema, default: () => ({}) },
-      en: { type: mediaAssetSchema, default: () => ({}) },
-    },
+    audio: { type: Map, of: mediaAssetSchema, default: {} },
     isPublished: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
   },
